@@ -13,7 +13,6 @@ const lang = getLangFromUrl(Astro.url);
 		<div class="flex h-16 items-center justify-between">
 			<div class="flex items-center gap-6">
 				<h2 class="text-lg font-semibold tracking-tight flex items-center gap-2">
-					<img src="/logo.svg" alt="Logo" class="w-8 h-8" />
 					<a 
 						href={`/${lang}/`} 
 						class="text-foreground transition-colors hover:text-primary"
@@ -22,7 +21,7 @@ const lang = getLangFromUrl(Astro.url);
 					</a>
 				</h2>
 				<div class="hidden md:flex md:items-center md:gap-6">
-					<HeaderLink href={`/`}>Articles</HeaderLink>
+					<HeaderLink href={`/veteran`}>Veteran</HeaderLink>
 				</div>
 			</div>
 			<div class="flex items-center gap-4">

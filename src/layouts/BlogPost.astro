@@ -6,9 +6,15 @@ import Prose from '../components/Prose.astro';
 import TableOfContent from '../components/TableOfContent.astro';
 import { useTranslations, getLangFromUrl } from '../i18n/utils';
 
-type Props = CollectionEntry<'blog'>['data'] & {
+type Props = {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  heroImage?: string;
   Content: any;
-  post: CollectionEntry<'blog'>;
+  post: CollectionEntry<'blog' | 'veteran'>;
+  lang?: 'en' | 'vi';
 };
 
 const { 
@@ -26,7 +32,7 @@ const t = useTranslations(lang);
 ---
 
 <Base title={title} description={description}>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
     <div class="flex flex-col lg:flex-row lg:gap-8">
       <!-- Main Content -->
       <article class="flex-1">

@@ -2,15 +2,9 @@
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from './FormattedDate.astro';
 
-interface Props {
-  post: CollectionEntry<'blog'>;
-}
-
-interface Heading {
-  depth: number;
-  slug: string;
-  text: string;
-}
+type Props = {
+  post: CollectionEntry<'blog' | 'veteran'>;
+};
 
 const { post } = Astro.props;
 const { pubDate, tags, authors, words, characters, blocks, readingTime } = post.data;
@@ -19,21 +13,16 @@ const { pubDate, tags, authors, words, characters, blocks, readingTime } = post.
 const { headings } = await post.render();
 ---
 
-<div class="bg-[hsl(var(--background-secondary))] text-[hsl(var(--foreground))] rounded-lg p-6 space-y-6 w-full max-w-xs sticky top-4">
+<div 
+  id="table-of-contents" 
+  data-headings={JSON.stringify(headings)} 
+  class="bg-[hsl(var(--background-secondary))] text-[hsl(var(--foreground))] rounded-lg p-6 space-y-6 w-full max-w-xs sticky top-4"
+>
   <div class="space-y-3">
     <h2 class="text-sm font-semibold text-[hsl(var(--foreground-muted))]">ON THIS PAGE</h2>
     <nav>
-      <ul class="space-y-2 list-none pl-0">
-        {headings.map((heading: Heading) => (
-          <li>
-            <a 
-              href={`#${heading.slug}`} 
-              class="text-[hsl(var(--foreground-secondary))] hover:text-[hsl(var(--foreground))] transition-colors duration-200 block text-[0.95rem]"
-            >
-              {heading.text}
-            </a>
-          </li>
-        ))}
+      <ul id="toc-list" class="space-y-2 list-none pl-0">
+        {/* Content will be dynamically populated by client-side script */}
       </ul>
     </nav>
   </div>
@@ -91,3 +80,84 @@ const { headings } = await post.render();
     </div>
   </div>
 </div>
+
+<script is:inline>
+document.addEventListener('DOMContentLoaded', () => {
+  const tocContainer = document.getElementById('table-of-contents');
+  const tocList = document.getElementById('toc-list');
+  
+  if (tocContainer && tocList) {
+    const headingsData = JSON.parse(tocContainer.dataset.headings || '[]');
+    
+    // Create a tree structure for headings
+    function createHeadingTree(headings) {
+      const tree = [];
+      const parentStack = [];
+
+      for (const heading of headings) {
+        // Remove existing children from the stack based on depth
+        while (parentStack.length > 0 && parentStack[parentStack.length - 1].depth >= heading.depth) {
+          parentStack.pop();
+        }
+
+        // If no parent or first level heading, add to root
+        if (parentStack.length === 0) {
+          tree.push(heading);
+        } else {
+          // Add as a child to the last parent
+          const parent = parentStack[parentStack.length - 1];
+          parent.children = parent.children || [];
+          parent.children.push(heading);
+        }
+
+        // This heading could be a parent for subsequent headings
+        parentStack.push(heading);
+      }
+
+      return tree;
+    }
+
+    // Recursive function to render nested headings
+    function renderHeadingTree(headings) {
+      const ul = document.createElement('ul');
+      ul.className = 'space-y-2 list-none pl-0';
+
+      headings.forEach(heading => {
+        const li = document.createElement('li');
+        
+        const a = document.createElement('a');
+        a.href = `#${heading.slug}`;
+        a.textContent = heading.text;
+        a.className = `
+          ${heading.depth === 2 ? 'font-semibold' : 'pl-2'}
+          text-[hsl(var(--foreground-secondary))] 
+          hover:text-[hsl(var(--foreground))] 
+          transition-colors duration-200 
+          block 
+          text-[0.95rem]
+        `;
+
+        li.appendChild(a);
+
+        if (heading.children && heading.children.length > 0) {
+          const childUl = renderHeadingTree(heading.children);
+          childUl.className = 'pl-4 space-y-1';
+          li.appendChild(childUl);
+        }
+
+        ul.appendChild(li);
+      });
+
+      return ul;
+    }
+
+    // Create and render the heading tree
+    const headingTree = createHeadingTree(headingsData);
+    const renderedTree = renderHeadingTree(headingTree);
+    
+    // Clear existing content and append the new tree
+    tocList.innerHTML = '';
+    tocList.appendChild(renderedTree);
+  }
+});
+</script>
