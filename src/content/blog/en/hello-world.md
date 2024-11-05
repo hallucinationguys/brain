@@ -1,17 +1,17 @@
 ---
-title: "Hello World"
-description: "Welcome to my multilingual blog with enhanced markdown features"
-pubDate: "2024-03-20"
-heroImage: "/blog-placeholder-1.jpg"
-lang: "en"
+title: 'Hello World'
+description: 'Welcome to my multilingual blog with enhanced markdown features'
+pubDate: '2024-05-11'
+heroImage: '/blog-placeholder-2.jpg'
+lang: 'en'
 tags:
-  - "i18n"
-  - "astro"
-  - "web-development"
-  - "multilingual"
+    - 'i18n'
+    - 'astro'
+    - 'web-development'
+    - 'multilingual'
 authors:
-  - "datnguyennnx"
-short_title: "Xin chào thế giới"
+    - 'datnguyennnx'
+short_title: 'Ggwp world'
 ---
 
 ## Introduction
@@ -25,20 +25,23 @@ This blog demonstrates the power of Astro's i18n capabilities combined with adva
 ## Key Features
 
 ### Multilingual Support
-- Content available in multiple languages
-- Easy language switching
-- SEO-friendly URLs with language prefixes
+
+-   Content available in multiple languages
+-   Easy language switching
+-   SEO-friendly URLs with language prefixes
 
 ### Performance
-- Responsive design
-- Fast loading times
-- Zero JavaScript by default
+
+-   Responsive design
+-   Fast loading times
+-   Zero JavaScript by default
 
 ### Enhanced Markdown
-- Automatic table of contents
-- Syntax highlighting
-- Clickable heading anchors
-- Smart typography for quotes and dashes
+
+-   Automatic table of contents
+-   Syntax highlighting
+-   Clickable heading anchors
+-   Smart typography for quotes and dashes
 
 ## Code Examples
 
@@ -47,37 +50,37 @@ This blog demonstrates the power of Astro's i18n capabilities combined with adva
 ```javascript
 // Example of a multilingual greeting function
 function sayHello(name, lang = 'en') {
-  const greetings = {
-    en: 'Hello',
-    vi: 'Xin chào',
-    es: '¡Hola',
-    fr: 'Bonjour'
-  };
-  
-  return `${greetings[lang] || greetings.en}, ${name}!`;
+    const greetings = {
+        en: 'Hello',
+        vi: 'Xin chào',
+        es: '¡Hola',
+        fr: 'Bonjour',
+    }
+
+    return `${greetings[lang] || greetings.en}, ${name}!`
 }
 
 // Usage
-console.log(sayHello('World')); // Hello, World!
-console.log(sayHello('Thế giới', 'vi')); // Xin chào, Thế giới!
+console.log(sayHello('World')) // Hello, World!
+console.log(sayHello('Thế giới', 'vi')) // Xin chào, Thế giới!
 ```
 
 ### TypeScript
 
 ```typescript
 interface Greeting {
-  [key: string]: string;
+    [key: string]: string
 }
 
 class MultilingualGreeter {
-  private greetings: Greeting = {
-    en: 'Hello',
-    vi: 'Xin chào'
-  };
+    private greetings: Greeting = {
+        en: 'Hello',
+        vi: 'Xin chào',
+    }
 
-  greet(name: string, lang: string = 'en'): string {
-    return `${this.greetings[lang] || this.greetings.en}, ${name}!`;
-  }
+    greet(name: string, lang: string = 'en'): string {
+        return `${this.greetings[lang] || this.greetings.en}, ${name}!`
+    }
 }
 ```
 
@@ -85,10 +88,10 @@ class MultilingualGreeter {
 
 Here are some helpful resources for building multilingual sites with Astro:
 
-- [Astro Documentation](https://docs.astro.build)
-- [Astro i18n Guide](https://docs.astro.build/en/guides/internationalization/)
-- [MDX Integration](https://docs.astro.build/en/guides/integrations-guide/mdx/)
-- [Tailwind CSS](https://tailwindcss.com)
+-   [Astro Documentation](https://docs.astro.build)
+-   [Astro i18n Guide](https://docs.astro.build/en/guides/internationalization/)
+-   [MDX Integration](https://docs.astro.build/en/guides/integrations-guide/mdx/)
+-   [Tailwind CSS](https://tailwindcss.com)
 
 ## What's Next?
 
