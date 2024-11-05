@@ -1,0 +1,122 @@
+---
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../i18n/utils';
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'vi' } },
+  ];
+}
+
+// Get blog posts in the current language
+const posts = await getCollection('blog', ({ id }) => {
+  return id.startsWith(lang + '/');
+});
+
+// Sort posts by date
+const sortedPosts = posts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Base>
+  <section class="hero">
+    <h1>{t('site.title')}</h1>
+    <p>{t('site.description')}</p>
+  </section>
+
+  <section class="latest-posts">
+    <h2>Latest Posts</h2>
+    <ul>
+      {sortedPosts.map((post) => {
+        const slug = post.slug.split('/')[1]; // Remove language prefix from slug
+        return (
+          <li>
+            <a href={`/${lang}/blog/${slug}`}>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.description}</p>
+              <time datetime={post.data.pubDate.toISOString()}>
+                {post.data.pubDate.toLocaleDateString(lang, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </time>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(to right, #4f46e5, #3b82f6);
+    color: white;
+    margin: -2rem -1rem 2rem -1rem;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero p {
+    font-size: 1.25rem;
+    opacity: 0.9;
+  }
+
+  .latest-posts {
+    margin-top: 3rem;
+  }
+
+  .latest-posts h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .latest-posts ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 2rem;
+  }
+
+  .latest-posts li a {
+    display: block;
+    padding: 1.5rem;
+    border: 1px solid #eee;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .latest-posts li a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .latest-posts h3 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+    color: #4f46e5;
+  }
+
+  .latest-posts time {
+    display: block;
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 1rem;
+  }
+</style>

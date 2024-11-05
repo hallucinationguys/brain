@@ -1,0 +1,61 @@
+---
+import { languages, type Languages } from '../i18n/ui';
+import { getLangFromUrl, useTranslatedPath, getRouteFromUrl } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
+
+// Get the current path without the language prefix
+const currentPath = Astro.url.pathname.replace(`/${lang}`, '') || '/';
+
+// Type-safe language entries
+const languageEntries = Object.entries(languages) as Array<[Languages, string]>;
+---
+
+<div class="language-picker">
+  <ul>
+    {
+      languageEntries.map(([code, label]) => (
+        <li>
+          <a 
+            href={translatePath(currentPath, code)}
+            class={`language-link ${code === lang ? 'active' : ''}`}
+            hreflang={code}
+          >
+            {label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .language-picker {
+    padding: 0.5rem;
+  }
+
+  .language-picker ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .language-link {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+  }
+
+  .language-link:hover {
+    color: #000;
+  }
+
+  .language-link.active {
+    color: #000;
+    font-weight: bold;
+  }
+</style>
