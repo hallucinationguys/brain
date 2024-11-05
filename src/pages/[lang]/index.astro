@@ -1,122 +1,80 @@
 ---
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../i18n/utils';
-import Base from '../../layouts/Base.astro';
+import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils';
+import Base from '@/layouts/Base.astro';
+import Prose from '@/components/Prose.astro';
+import FormattedDate from '@/components/FormattedDate.astro';
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'vi' } }
+  ];
+}
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-export function getStaticPaths() {
-  return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'vi' } },
-  ];
-}
-
-// Get blog posts in the current language
-const posts = await getCollection('blog', ({ id }) => {
-  return id.startsWith(lang + '/');
+// Fetch blog posts for the current language
+const posts = await getCollection('blog', (post: CollectionEntry<'blog'>) => {
+  return post.slug.startsWith(`${lang}/`);
 });
 
-// Sort posts by date
-const sortedPosts = posts.sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+// Sort posts by publication date (most recent first)
+const sortedPosts = posts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => 
+  new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
 );
 ---
 
-<Base>
-  <section class="hero">
-    <h1>{t('site.title')}</h1>
-    <p>{t('site.description')}</p>
-  </section>
+<Base title={t('site.title')} description={t('site.description')}>
+  <div class="container mx-auto px-4 py-8">
+    <Prose>
+      <h1 class="text-4xl font-bold mb-8 text-foreground">
+        {t('site.title')}
+      </h1>
+      
+      <p class="text-lg text-muted-foreground mb-8">
+        {t('site.description')}
+      </p>
 
-  <section class="latest-posts">
-    <h2>Latest Posts</h2>
-    <ul>
-      {sortedPosts.map((post) => {
-        const slug = post.slug.split('/')[1]; // Remove language prefix from slug
-        return (
-          <li>
-            <a href={`/${lang}/blog/${slug}`}>
-              <h3>{post.data.title}</h3>
-              <p>{post.data.description}</p>
-              <time datetime={post.data.pubDate.toISOString()}>
-                {post.data.pubDate.toLocaleDateString(lang, {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </time>
-            </a>
-          </li>
-        );
-      })}
-    </ul>
-  </section>
+      <section class="blog-posts">
+        <h2 class="text-2xl font-semibold mb-6 text-foreground">
+          {t('nav.blog')}
+        </h2>
+
+        {sortedPosts.length > 0 ? (
+          <ul class="space-y-6">
+            {sortedPosts.map((post: CollectionEntry<'blog'>) => (
+              <li class="border-b pb-6 last:border-b-0" style="border-color: hsl(var(--border))">
+                <article>
+                  <h3 class="text-xl font-bold mb-2">
+                    <a 
+                      href={translatePath(`/blog/${post.slug.split('/').pop()}`)} 
+                      class="text-primary hover:underline"
+                    >
+                      {post.data.title}
+                    </a>
+                  </h3>
+                  <div class="text-muted-foreground text-sm mb-2">
+                    <FormattedDate date={post.data.pubDate} />
+                  </div>
+                  {post.data.description && (
+                    <p class="text-muted-foreground">
+                      {post.data.description}
+                    </p>
+                  )}
+                </article>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="text-muted-foreground italic">
+            {t('blog.no_posts')}
+          </p>
+        )}
+      </section>
+    </Prose>
+  </div>
 </Base>
-
-<style>
-  .hero {
-    text-align: center;
-    padding: 4rem 2rem;
-    background: linear-gradient(to right, #4f46e5, #3b82f6);
-    color: white;
-    margin: -2rem -1rem 2rem -1rem;
-  }
-
-  .hero h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-
-  .hero p {
-    font-size: 1.25rem;
-    opacity: 0.9;
-  }
-
-  .latest-posts {
-    margin-top: 3rem;
-  }
-
-  .latest-posts h2 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .latest-posts ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 2rem;
-  }
-
-  .latest-posts li a {
-    display: block;
-    padding: 1.5rem;
-    border: 1px solid #eee;
-    border-radius: 0.5rem;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .latest-posts li a:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .latest-posts h3 {
-    font-size: 1.5rem;
-    margin: 0 0 0.5rem 0;
-    color: #4f46e5;
-  }
-
-  .latest-posts time {
-    display: block;
-    font-size: 0.875rem;
-    color: #666;
-    margin-top: 1rem;
-  }
-</style>

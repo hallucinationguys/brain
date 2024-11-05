@@ -1,6 +1,6 @@
 ---
-import { languages, type Languages } from '../i18n/ui';
-import { getLangFromUrl, useTranslatedPath, getRouteFromUrl } from '../i18n/utils';
+import { languages, type Languages } from '@/i18n/ui';
+import { getLangFromUrl, useTranslatedPath } from '@/i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const translatePath = useTranslatedPath(lang);
@@ -12,15 +12,26 @@ const currentPath = Astro.url.pathname.replace(`/${lang}`, '') || '/';
 const languageEntries = Object.entries(languages) as Array<[Languages, string]>;
 ---
 
-<div class="language-picker">
-  <ul>
+<div 
+  class="language-picker" 
+  role="region" 
+  aria-label="Language Selection"
+>
+  <ul class="flex items-center space-x-2">
     {
       languageEntries.map(([code, label]) => (
         <li>
           <a 
             href={translatePath(currentPath, code)}
-            class={`language-link ${code === lang ? 'active' : ''}`}
+            class={`
+              inline-block px-2 py-1 rounded-md text-sm
+              ${code === lang 
+                ? 'bg-blue-100 text-blue-800 font-semibold' 
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}
+              transition-colors duration-200
+            `}
             hreflang={code}
+            aria-current={code === lang ? 'page' : undefined}
           >
             {label}
           </a>
@@ -29,33 +40,3 @@ const languageEntries = Object.entries(languages) as Array<[Languages, string]>;
     }
   </ul>
 </div>
-
-<style>
-  .language-picker {
-    padding: 0.5rem;
-  }
-
-  .language-picker ul {
-    display: flex;
-    gap: 1rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .language-link {
-    color: #666;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.2s ease;
-  }
-
-  .language-link:hover {
-    color: #000;
-  }
-
-  .language-link.active {
-    color: #000;
-    font-weight: bold;
-  }
-</style>

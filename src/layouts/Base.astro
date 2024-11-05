@@ -1,6 +1,8 @@
 ---
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
-import LanguagePicker from '../components/LanguagePicker.astro';
+import { getLangFromUrl, useTranslations } from '@/i18n/utils';
+import BaseHead from '@/components/BaseHead.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
 
 interface Props {
   title?: string;
@@ -10,83 +12,21 @@ interface Props {
 const { title, description } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const translatePath = useTranslatedPath(lang);
+
 ---
 
-<html lang={lang}>
+<html lang={lang} class="scroll-smooth">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title || t('site.title')}</title>
-    <meta name="description" content={description || t('site.description')} />
+    <BaseHead 
+      title={title || t('site.title')} 
+      description={description || t('site.description')} 
+    />
   </head>
-  <body>
-    <header>
-      <nav>
-        <div class="nav-links">
-          <a href={`/${lang}/`} class="site-title">{t('site.title')}</a>
-          <a href={`/${lang}/`}>{t('nav.home')}</a>
-          <a href={`/${lang}/about`}>{t('nav.about')}</a>
-        </div>
-        <LanguagePicker />
-      </nav>
-    </header>
-    <main>
+  <body class="min-h-screen flex flex-col bg-background text-foreground">
+    <Header />
+    <main class="flex-grow container mx-auto px-4 py-6">
       <slot />
     </main>
-    <footer>
-      <p>&copy; {new Date().getFullYear()} {t('site.title')}</p>
-    </footer>
+    <Footer />
   </body>
 </html>
-
-<style>
-  header {
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-  }
-
-  nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 80ch;
-    margin: 0 auto;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-  }
-
-  .nav-links a {
-    color: #666;
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  .nav-links a:hover {
-    color: #000;
-  }
-
-  .site-title {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: #4f46e5 !important;
-  }
-
-  main {
-    max-width: 80ch;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-  }
-
-  footer {
-    text-align: center;
-    padding: 2rem 1rem;
-    border-top: 1px solid #eee;
-    color: #666;
-  }
-</style>

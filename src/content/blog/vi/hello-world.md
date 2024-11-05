@@ -3,9 +3,16 @@ title: "Xin chào thế giới"
 description: "Chào mừng đến với blog đa ngôn ngữ của tôi"
 pubDate: "2024-03-20"
 heroImage: "/blog-placeholder-1.jpg"
+lang: "vi"
+tags:
+  - "i18n"
+  - "astro"
+  - "web-development"
+  - "multilingual"
+authors:
+  - "datnguyennnx"
+short_title: "Xin chào thế giới"
 ---
-
-Chào mừng đến với blog đa ngôn ngữ của tôi! Đây là bài viết mẫu bằng tiếng Việt.
 
 ## Blog này là gì?
 

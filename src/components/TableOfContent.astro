@@ -1,0 +1,93 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+const { post } = Astro.props;
+const { pubDate, tags, authors, words, characters, blocks, readingTime } = post.data;
+
+// Extract headings from content
+const { headings } = await post.render();
+---
+
+<div class="bg-[hsl(var(--background-secondary))] text-[hsl(var(--foreground))] rounded-lg p-6 space-y-6 w-full max-w-xs sticky top-4">
+  <div class="space-y-3">
+    <h2 class="text-sm font-semibold text-[hsl(var(--foreground-muted))]">ON THIS PAGE</h2>
+    <nav>
+      <ul class="space-y-2 list-none pl-0">
+        {headings.map((heading: Heading) => (
+          <li>
+            <a 
+              href={`#${heading.slug}`} 
+              class="text-[hsl(var(--foreground-secondary))] hover:text-[hsl(var(--foreground))] transition-colors duration-200 block text-[0.95rem]"
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="space-y-3">
+    <h2 class="text-sm font-semibold text-[hsl(var(--foreground-muted))]">PROPERTIES</h2>
+    <div class="space-y-2">
+      <div class="flex items-start gap-2 text-sm">
+        <span class="text-lg opacity-70">📅</span>
+        <span class="text-[hsl(var(--foreground-muted))]">Created:</span>
+        <span class="text-[hsl(var(--foreground-secondary))]"><FormattedDate date={pubDate} /></span>
+      </div>
+      
+      {authors && authors.length > 0 && (
+        <div class="flex items-start gap-2 text-sm">
+          <span class="text-lg opacity-70">👤</span>
+          <span class="text-[hsl(var(--foreground-muted))]">Author:</span>
+          <span class="text-[hsl(var(--foreground-secondary))]">{authors.join(', ')}</span>
+        </div>
+      )}
+
+      {tags && tags.length > 0 && (
+        <div class="flex items-start gap-2 text-sm">
+          <span class="text-lg opacity-70">🏷️</span>
+          <span class="text-[hsl(var(--foreground-muted))]">Tags:</span>
+          <div class="flex flex-wrap gap-2">
+            {tags.map((tag: string) => (
+              <span class="px-2 py-1 bg-[hsl(var(--secondary))] rounded-md text-xs text-[hsl(var(--foreground-secondary))]">{tag}</span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <div class="space-y-3">
+    <h2 class="text-sm font-semibold text-[hsl(var(--foreground-muted))]">STATS</h2>
+    <div class="space-y-2">
+      <div class="flex justify-between text-sm">
+        <span class="text-[hsl(var(--foreground-muted))]">Words:</span>
+        <span class="text-[hsl(var(--foreground-secondary))]">{words || '0'}</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-[hsl(var(--foreground-muted))]">Characters:</span>
+        <span class="text-[hsl(var(--foreground-secondary))]">{characters || '0'}</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-[hsl(var(--foreground-muted))]">Blocks:</span>
+        <span class="text-[hsl(var(--foreground-secondary))]">{blocks || '0'}</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-[hsl(var(--foreground-muted))]">Est.reading Time:</span>
+        <span class="text-[hsl(var(--foreground-secondary))]">{readingTime || '0m 0s'}</span>
+      </div>
+    </div>
+  </div>
+</div>

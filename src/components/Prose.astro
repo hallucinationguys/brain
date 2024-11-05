@@ -1,0 +1,58 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'div'>;
+
+const { class: className, ...props } = Astro.props;
+---
+
+<div 
+  class:list={[
+    className,
+    "prose dark:prose-invert max-w-none",
+    // Base typography
+    "prose-h1:font-bold prose-h1:text-xl",
+    "prose-p:text-justify",
+    "prose-img:rounded-xl",
+    // Links
+    "prose-a:text-blue-600 dark:prose-a:text-blue-400",
+    "prose-a:no-underline hover:prose-a:underline",
+    // Headings
+    "prose-headings:scroll-mt-16",
+    "prose-headings:font-bold",
+    // Table of contents
+    "[&_#contents+ul]:list-none",
+    "[&_#contents+ul]:pl-0",
+    "[&_#contents+ul]:mt-4",
+    "[&_#contents+ul_ul]:list-disc",
+    "[&_#contents+ul_ul]:pl-4",
+    // Anchor links
+    "[&_.anchor-link]:ml-2",
+    "[&_.anchor-link]:text-gray-400",
+    "[&_.anchor-link]:opacity-0",
+    "[&_h1:hover_.anchor-link]:opacity-100",
+    "[&_h2:hover_.anchor-link]:opacity-100",
+    "[&_h3:hover_.anchor-link]:opacity-100",
+    "[&_h4:hover_.anchor-link]:opacity-100",
+    // Code blocks
+    "prose-pre:rounded-lg",
+    "prose-pre:border",
+    "prose-pre:border-gray-200",
+    "dark:prose-pre:border-gray-700",
+    // Inline code
+    "prose-code:before:content-none",
+    "prose-code:after:content-none",
+    "prose-code:font-normal",
+    "prose-code:bg-gray-100",
+    "prose-code:dark:bg-gray-800",
+    "prose-code:rounded",
+    "prose-code:px-1",
+    // External links
+    "[&_a[target=_blank]]:after:content-['_↗']",
+    "[&_a[target=_blank]]:after:text-gray-400",
+    "[&_a[target=_blank]]:after:text-sm",
+  ]}
+  {...props}
+>
+  <slot />
+</div>
