@@ -1,117 +1,135 @@
 ---
-import type { HTMLAttributes } from 'astro/types';
+import type { HTMLAttributes } from 'astro/types'
 
-type Props = HTMLAttributes<'div'>;
+type Props = HTMLAttributes<'div'>
 
-const { class: className, ...props } = Astro.props;
+const { class: className, ...props } = Astro.props
 ---
 
-<div 
-  class:list={[
-    className,
-    "prose dark:prose-invert max-w-none",
-    // Base typography
-    "prose-h1:font-bold prose-h1:text-xl",
-    "prose-p:text-justify",
-    "prose-img:rounded-xl",
-    // Links
-    "prose-a:text-blue-600 dark:prose-a:text-blue-400",
-    "prose-a:no-underline hover:prose-a:underline",
-    // Headings
-    "prose-headings:scroll-mt-16",
-    "prose-headings:font-bold",
-    // Table of contents
-    "[&_#contents+ul]:list-none",
-    "[&_#contents+ul]:pl-0",
-    "[&_#contents+ul]:mt-4",
-    "[&_#contents+ul_ul]:list-disc",
-    "[&_#contents+ul_ul]:pl-4",
-    // Anchor links
-    "[&_.anchor-link]:ml-2",
-    "[&_.anchor-link]:text-gray-400",
-    "[&_.anchor-link]:opacity-0",
-    "[&_h1:hover_.anchor-link]:opacity-100",
-    "[&_h2:hover_.anchor-link]:opacity-100",
-    "[&_h3:hover_.anchor-link]:opacity-100",
-    "[&_h4:hover_.anchor-link]:opacity-100",
-    // Code blocks
-    "prose-pre:rounded-lg",
-    "prose-pre:border",
-    "prose-pre:border-gray-200",
-    "dark:prose-pre:border-gray-700",
-    "prose-pre:relative", // Add relative positioning for copy button
-    // Inline code
-    "prose-code:before:content-none",
-    "prose-code:after:content-none",
-    "prose-code:font-normal",
-    "prose-code:bg-gray-100",
-    "prose-code:dark:bg-gray-800",
-    "prose-code:rounded",
-    "prose-code:px-1",
-    // External links
-    "[&_a[target=_blank]]:after:content-['_↗']",
-    "[&_a[target=_blank]]:after:text-gray-400",
-    "[&_a[target=_blank]]:after:text-sm",
-    // Copy button styles
-    "[&_.copy-btn]:absolute [&_.copy-btn]:top-2 [&_.copy-btn]:right-2",
-    "[&_.copy-btn]:bg-gray-200 [&_.copy-btn]:dark:bg-gray-700",
-    "[&_.copy-btn]:text-gray-600 [&_.copy-btn]:dark:text-gray-300",
-    "[&_.copy-btn]:px-2 [&_.copy-btn]:py-1",
-    "[&_.copy-btn]:rounded",
-    "[&_.copy-btn]:text-xs",
-    "[&_.copy-btn]:z-10",
-    "[&_.copy-btn]:opacity-50 hover:[&_.copy-btn]:opacity-100",
-    "[&_.copy-btn.copied]:text-green-500",
-  ]}
-  {...props}
+<div
+    class:list={[
+        className,
+        'prose max-w-none dark:prose-invert',
+        // Base typography
+        'prose-h1:text-xl prose-h1:font-bold',
+        'prose-p:text-justify',
+        'prose-img:rounded-xl',
+        // Links
+        'prose-a:text-blue-600 dark:prose-a:text-blue-400',
+        'prose-a:no-underline hover:prose-a:underline',
+        // Headings
+        'prose-headings:scroll-mt-16',
+        'prose-headings:font-bold',
+        // Table of contents
+        '[&_#contents+ul]:list-none',
+        '[&_#contents+ul]:pl-0',
+        '[&_#contents+ul]:mt-4',
+        '[&_#contents+ul_ul]:list-disc',
+        '[&_#contents+ul_ul]:pl-4',
+        // Anchor links
+        '[&_.anchor-link]:ml-2',
+        '[&_.anchor-link]:text-gray-400',
+        '[&_.anchor-link]:opacity-0',
+        '[&_h1:hover_.anchor-link]:opacity-100',
+        '[&_h2:hover_.anchor-link]:opacity-100',
+        '[&_h3:hover_.anchor-link]:opacity-100',
+        '[&_h4:hover_.anchor-link]:opacity-100',
+        // Code blocks
+        'prose-pre:rounded-lg',
+        'prose-pre:border',
+        'prose-pre:border-gray-200',
+        'dark:prose-pre:border-gray-700',
+        'prose-pre:relative', // Add relative positioning for copy button
+        // Inline code
+        'prose-code:before:content-none',
+        'prose-code:after:content-none',
+        'prose-code:font-normal',
+        'prose-code:bg-gray-100',
+        'prose-code:dark:bg-gray-800',
+        'prose-code:rounded',
+        'prose-code:px-1',
+        // External links
+        "[&_a[target=_blank]]:after:content-['_↗']",
+        '[&_a[target=_blank]]:after:text-gray-400',
+        '[&_a[target=_blank]]:after:text-sm',
+        // Copy button styles
+        '[&_.copy-btn]:absolute [&_.copy-btn]:right-2 [&_.copy-btn]:top-2',
+        '[&_.copy-btn]:bg-gray-200 [&_.copy-btn]:dark:bg-gray-700',
+        '[&_.copy-btn]:text-gray-600 [&_.copy-btn]:dark:text-gray-300',
+        '[&_.copy-btn]:px-2 [&_.copy-btn]:py-1',
+        '[&_.copy-btn]:rounded',
+        '[&_.copy-btn]:text-xs',
+        '[&_.copy-btn]:z-10',
+        '[&_.copy-btn]:opacity-50 hover:[&_.copy-btn]:opacity-100',
+        '[&_.copy-btn.copied]:text-green-500',
+    ]}
+    {...props}
 >
-  <slot />
+    <slot />
 </div>
 
 <script is:inline>
-document.addEventListener('DOMContentLoaded', () => {
-  const codeBlocks = document.querySelectorAll('pre');
-  
-  codeBlocks.forEach(block => {
-    // Check if copy button already exists
-    if (block.querySelector('.copy-btn')) return;
+    document.addEventListener('DOMContentLoaded', () => {
+        const codeBlocks = document.querySelectorAll('pre')
 
-    // Create copy button
-    const copyBtn = document.createElement('button');
-    copyBtn.type = 'button';
-    copyBtn.classList.add('copy-btn', 'absolute', 'top-2', 'right-2', 'bg-gray-200', 'dark:bg-gray-700', 'text-gray-600', 'dark:text-gray-300', 'px-2', 'py-2', 'rounded', 'text-xs', 'z-10', 'opacity-50', 'hover:opacity-100', 'flex', 'items-center');
-    copyBtn.innerHTML = `
+        codeBlocks.forEach((block) => {
+            // Check if copy button already exists
+            if (block.querySelector('.copy-btn')) return
+
+            // Create copy button
+            const copyBtn = document.createElement('button')
+            copyBtn.type = 'button'
+            copyBtn.classList.add(
+                'copy-btn',
+                'absolute',
+                'top-2',
+                'right-2',
+                'bg-gray-200',
+                'dark:bg-gray-700',
+                'text-gray-600',
+                'dark:text-gray-300',
+                'px-2',
+                'py-2',
+                'rounded',
+                'text-xs',
+                'z-10',
+                'opacity-50',
+                'hover:opacity-100',
+                'flex',
+                'items-center',
+            )
+            copyBtn.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="9" y="9" width="14" height="14" rx="2" ry="2"></rect>
         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
       </svg>
-    `;
+    `
 
-    // Add copy functionality
-    copyBtn.addEventListener('click', () => {
-      const codeText = block.textContent || '';
-      navigator.clipboard.writeText(codeText.trim()).then(() => {
-        // Temporary feedback
-        copyBtn.innerHTML = `
+            // Add copy functionality
+            copyBtn.addEventListener('click', () => {
+                const codeText = block.textContent || ''
+                navigator.clipboard.writeText(codeText.trim()).then(() => {
+                    // Temporary feedback
+                    copyBtn.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-        `;
-        
-        // Reset after 2 seconds
-        setTimeout(() => {
-          copyBtn.innerHTML = `
+        `
+
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        copyBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="9" y="9" width="14" height="14" rx="2" ry="2"></rect>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
             </svg>
-          `;
-        }, 5000);
-      });
-    });
+          `
+                    }, 5000)
+                })
+            })
 
-    // Append to the code block
-    block.appendChild(copyBtn);
-  });
-});
+            // Append to the code block
+            block.appendChild(copyBtn)
+        })
+    })
 </script>

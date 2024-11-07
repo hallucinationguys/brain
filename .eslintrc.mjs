@@ -13,7 +13,8 @@ export default [
     parserOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      project: './tsconfig.json'
+      project: './tsconfig.json',
+      ecmaVersion: 2020
     },
     rules: {
       // Astro-specific rules

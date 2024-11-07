@@ -1,82 +1,77 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import Base from './Base.astro';
-import FormattedDate from '../components/FormattedDate.astro';
-import Prose from '../components/Prose.astro';
-import TableOfContent from '../components/TableOfContent.astro';
-import { useTranslations, getLangFromUrl } from '../i18n/utils';
+import type { CollectionEntry } from 'astro:content'
+import Base from './Base.astro'
+import FormattedDate from '../components/FormattedDate.astro'
+import Prose from '../components/Prose.astro'
+import TableOfContent from '../components/TableOfContent.astro'
+import { useTranslations, getLangFromUrl } from '../i18n/utils'
 
 type Props = {
-  title: string;
-  description: string;
-  pubDate: Date;
-  updatedDate?: Date;
-  heroImage?: string;
-  Content: any;
-  post: CollectionEntry<'blog' | 'veteran'>;
-  lang?: 'en' | 'vi';
-};
+    title: string
+    description: string
+    pubDate: Date
+    updatedDate?: Date
+    heroImage?: string
+    Content: any
+    post: CollectionEntry<'blog' | 'veteran'>
+    lang?: 'en' | 'vi'
+}
 
-const { 
-  title, 
-  description, 
-  pubDate, 
-  updatedDate, 
-  heroImage,
-  Content,
-  post 
-} = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, Content, post } = Astro.props
 
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <Base title={title} description={description}>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
-    <div class="flex flex-col lg:flex-row lg:gap-8">
-      <!-- Main Content -->
-      <article class="flex-1">
-        {heroImage && (
-          <img 
-            width={1020} 
-            height={510} 
-            src={heroImage} 
-            alt="" 
-            class="w-full rounded-lg shadow-md object-cover mb-8"
-          />
-        )}
-        <Prose>
-          <div class="title">
-            <div class="date text-muted-foreground text-md">
-              <FormattedDate date={pubDate} />
-              {
-                updatedDate && (
-                  <div class="last-updated-on italic">
-                    {t('nav.blog')} updated: <FormattedDate date={updatedDate} />
-                  </div>
-                )
-              }
-            </div>
-            <h1 class="text-3xl font-bold text-foreground">{title}</h1>
-          </div>
-          <Content />
-        </Prose>
-      </article>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:gap-8">
+            <!-- Main Content -->
+            <article class="flex-1">
+                {
+                    heroImage && (
+                        <img
+                            width={1020}
+                            height={510}
+                            src={heroImage}
+                            alt=""
+                            class="mb-8 w-full rounded-lg object-cover shadow-md"
+                        />
+                    )
+                }
+                <Prose>
+                    <div class="title">
+                        <div class="date text-md text-muted-foreground">
+                            <FormattedDate date={pubDate} />
+                            {
+                                updatedDate && (
+                                    <div class="last-updated-on italic">
+                                        {t('nav.blog')} updated:{' '}
+                                        <FormattedDate date={updatedDate} />
+                                    </div>
+                                )
+                            }
+                        </div>
+                        <h1 class="text-3xl font-bold text-foreground">{title}</h1>
+                    </div>
+                    <Content />
+                </Prose>
+            </article>
 
-      <!-- Table of Contents Sidebar -->
-      <aside class="lg:w-80 mt-8 lg:mt-0">
-        <div class="lg:sticky lg:top-8">
-          <TableOfContent post={post} />
+            <!-- Table of Contents Sidebar -->
+            <aside class="mt-8 lg:mt-0 lg:w-80">
+                <div class="lg:sticky lg:top-8">
+                    <TableOfContent post={post} />
+                </div>
+            </aside>
         </div>
-      </aside>
     </div>
-  </div>
 </Base>
 
 <style>
-  @media (max-width: 1024px) {
-    aside {
-      order: -1;
+    @media (max-width: 1024px) {
+        aside {
+            order: -1;
+        }
     }
-  }
 </style>

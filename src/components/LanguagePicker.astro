@@ -1,42 +1,36 @@
 ---
-import { languages, type Languages } from '@/i18n/ui';
-import { getLangFromUrl, useTranslatedPath } from '@/i18n/utils';
+import { languages, type Languages } from '@/i18n/ui'
+import { getLangFromUrl, useTranslatedPath } from '@/i18n/utils'
 
-const lang = getLangFromUrl(Astro.url);
-const translatePath = useTranslatedPath(lang);
+const lang = getLangFromUrl(Astro.url)
+const translatePath = useTranslatedPath(lang)
 
 // Get the current path without the language prefix
-const currentPath = Astro.url.pathname.replace(`/${lang}`, '') || '/';
+const currentPath = Astro.url.pathname.replace(`/${lang}`, '') || '/'
 
 // Type-safe language entries
-const languageEntries = Object.entries(languages) as Array<[Languages, string]>;
+const languageEntries = Object.entries(languages) as Array<[Languages, string]>
 ---
 
-<div 
-  class="language-picker" 
-  role="region" 
-  aria-label="Language Selection"
->
-  <ul class="flex items-center space-x-2">
-    {
-      languageEntries.map(([code, label]) => (
-        <li>
-          <a 
-            href={translatePath(currentPath, code)}
-            class={`
-              inline-block px-2 py-1 rounded-md text-sm
-              ${code === lang 
-                ? 'bg-blue-100 text-blue-800 font-semibold' 
-                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}
-              transition-colors duration-200
-            `}
-            hreflang={code}
-            aria-current={code === lang ? 'page' : undefined}
-          >
-            {label}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+<div class="language-picker" role="region" aria-label="Language Selection">
+    <ul class="flex items-center space-x-2">
+        {
+            languageEntries.map(([code, label]) => (
+                <li>
+                    <a
+                        href={translatePath(currentPath, code)}
+                        class={`inline-block rounded-md px-2 py-1 text-sm ${
+                            code === lang
+                                ? 'bg-blue-100 font-semibold text-blue-800'
+                                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                        } transition-colors duration-200`}
+                        hreflang={code}
+                        aria-current={code === lang ? 'page' : undefined}
+                    >
+                        {label}
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
 </div>

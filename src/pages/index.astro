@@ -1,49 +1,49 @@
 ---
-import { getLangFromUrl, useTranslatedPath } from '@/i18n/utils';
-import { defaultLang } from '@/i18n/ui';
+import { getLangFromUrl, useTranslatedPath } from '@/i18n/utils'
+import { defaultLang } from '@/i18n/ui'
 import '../styles/global.css'
 
 // Determine the user's preferred language
-const lang = getLangFromUrl(Astro.url) || defaultLang;
-const translatePath = useTranslatedPath(lang);
+const lang = getLangFromUrl(Astro.url) || defaultLang
+const translatePath = useTranslatedPath(lang)
 
 // Redirect to the appropriate language-specific home page
-const homePath = translatePath('/');
+const homePath = translatePath('/')
 
 // Server-side redirect
 if (Astro.redirect) {
-  return Astro.redirect(homePath);
+    return Astro.redirect(homePath)
 }
 ---
 
 <script is:inline>
-	const getThemePreference = () => {
-		if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-			return localStorage.getItem('theme');
-		}
-		return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-	};
-	const isDark = getThemePreference() === 'dark';
-	document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
- 
-	if (typeof localStorage !== 'undefined') {
-		const observer = new MutationObserver(() => {
-			const isDark = document.documentElement.classList.contains('dark');
-			localStorage.setItem('theme', isDark ? 'dark' : 'light');
-		});
-		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-	}
+    const getThemePreference = () => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+            return localStorage.getItem('theme')
+        }
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+    const isDark = getThemePreference() === 'dark'
+    document.documentElement.classList[isDark ? 'add' : 'remove']('dark')
+
+    if (typeof localStorage !== 'undefined') {
+        const observer = new MutationObserver(() => {
+            const isDark = document.documentElement.classList.contains('dark')
+            localStorage.setItem('theme', isDark ? 'dark' : 'light')
+        })
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    }
 </script>
 
 <html>
-  <head>
-    <meta http-equiv="refresh" content={`0;url=${homePath}`} />
-    <script is:inline>
-      // Client-side redirect as a fallback
-      window.location.href = `${homePath}`;
-    </script>
-  </head>
-  <body>
-    <p>Redirecting to {homePath}...</p>
-  </body>
+    <head>
+        <meta http-equiv="refresh" content={`0;url=${homePath}`} />
+        <script is:inline>
+            // Client-side redirect as a fallback
+            window.location.href = `${homePath}`
+        </script>
+    </head>
+    <body>
+        <p>Redirecting to {homePath}...</p>
+    </body>
 </html>

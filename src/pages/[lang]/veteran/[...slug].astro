@@ -1,59 +1,59 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
-import BlogPost from '@/layouts/BlogPost.astro';
-import { getLangFromUrl } from '@/i18n/utils';
+import { type CollectionEntry, getCollection } from 'astro:content'
+import BlogPost from '@/layouts/BlogPost.astro'
+import { getLangFromUrl } from '@/i18n/utils'
 
 interface Props {
-  entry: CollectionEntry<'veteran'>;
+    entry: CollectionEntry<'veteran'>
 }
 
 export async function getStaticPaths() {
-  const posts = await getCollection('veteran');
-  
-  return posts.map((post: CollectionEntry<'veteran'>) => {
-    // Remove the language prefix from the slug
-    const slugParts = post.slug.split('/').slice(1);
-    return {
-      params: {
-        lang: post.data.lang,
-        slug: slugParts.join('/'),
-      },
-      props: {
-        entry: post,
-      },
-    };
-  });
+    const posts = await getCollection('veteran')
+
+    return posts.map((post: CollectionEntry<'veteran'>) => {
+        // Remove the language prefix from the slug
+        const slugParts = post.slug.split('/').slice(1)
+        return {
+            params: {
+                lang: post.data.lang,
+                slug: slugParts.join('/'),
+            },
+            props: {
+                entry: post,
+            },
+        }
+    })
 }
 
-const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { entry } = Astro.props
+const { Content } = await entry.render()
 
 // Calculate word count and reading time
-const content = await entry.body;
-const words = content.split(/\s+/).length;
-const readingTime = `${Math.ceil(words / 200)}m ${Math.ceil((words % 200) / (200/60))}s`;
+const content = await entry.body
+const words = content.split(/\s+/).length
+const readingTime = `${Math.ceil(words / 200)}m ${Math.ceil((words % 200) / (200 / 60))}s`
 
 // Create a new data object with additional stats
 const enhancedData = {
-  ...entry.data,
-  words,
-  characters: content.length,
-  blocks: content.split('\n\n').length,
-  readingTime
-};
+    ...entry.data,
+    words,
+    characters: content.length,
+    blocks: content.split('\n\n').length,
+    readingTime,
+}
 
 // Verify the language matches the URL
-const lang = getLangFromUrl(Astro.url);
+const lang = getLangFromUrl(Astro.url)
 if (entry.data.lang !== lang) {
-  return Astro.redirect(`/${entry.data.lang}/veteran/${entry.slug.split('/').slice(1).join('/')}`);
+    return Astro.redirect(`/${entry.data.lang}/veteran/${entry.slug.split('/').slice(1).join('/')}`)
 }
 ---
 
-<BlogPost 
-  {...enhancedData} 
-  Content={Content} 
-  post={{
-    ...entry,
-    data: enhancedData
-  }} 
+<BlogPost
+    {...enhancedData}
+    Content={Content}
+    post={{
+        ...entry,
+        data: enhancedData,
+    }}
 />

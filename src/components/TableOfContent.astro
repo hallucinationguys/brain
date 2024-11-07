@@ -1,130 +1,144 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import FormattedDate from './FormattedDate.astro';
+import type { CollectionEntry } from 'astro:content'
+import FormattedDate from './FormattedDate.astro'
 
 type Props = {
-  post: CollectionEntry<'blog' | 'veteran'>;
-};
+    post: CollectionEntry<'blog' | 'veteran'>
+}
 
-const { post } = Astro.props;
-const { pubDate, tags, authors, words, characters, blocks, readingTime } = post.data;
+const { post } = Astro.props
+const { pubDate, tags, authors, words, characters, blocks, readingTime } = post.data
 
 // Extract headings from content
-const { headings } = await post.render();
+const { headings } = await post.render()
 ---
 
-<div 
-  id="table-of-contents" 
-  data-headings={JSON.stringify(headings)} 
-  class="bg-[hsl(var(--background-secondary))] text-[hsl(var(--foreground))] rounded-lg p-6 space-y-6 w-full max-w-xs sticky top-4"
+<div
+    id="table-of-contents"
+    data-headings={JSON.stringify(headings)}
+    class="sticky top-4 w-full max-w-xs space-y-6 rounded-lg bg-[hsl(var(--background-secondary))] p-6 text-[hsl(var(--foreground))]"
 >
-  <div class="space-y-3">
-    <h2 class="text-sm font-semibold text-[hsl(var(--foreground-muted))]">ON THIS PAGE</h2>
-    <nav>
-      <ul id="toc-list" class="space-y-2 list-none pl-0">
-        {/* Content will be dynamically populated by client-side script */}
-      </ul>
-    </nav>
-  </div>
-
-  <div class="space-y-3">
-    <h2 class="text-sm font-semibold text-[hsl(var(--foreground-muted))]">PROPERTIES</h2>
-    <div class="space-y-2">
-      <div class="flex items-start gap-2 text-sm">
-        <span class="text-lg opacity-70">📅</span>
-        <span class="text-[hsl(var(--foreground-muted))]">Created:</span>
-        <span class="text-[hsl(var(--foreground-secondary))]"><FormattedDate date={pubDate} /></span>
-      </div>
-      
-      {authors && authors.length > 0 && (
-        <div class="flex items-start gap-2 text-sm">
-          <span class="text-lg opacity-70">👤</span>
-          <span class="text-[hsl(var(--foreground-muted))]">Author:</span>
-          <span class="text-[hsl(var(--foreground-secondary))]">{authors.join(', ')}</span>
-        </div>
-      )}
-
-      {tags && tags.length > 0 && (
-        <div class="flex items-start gap-2 text-sm">
-          <span class="text-lg opacity-70">🏷️</span>
-          <span class="text-[hsl(var(--foreground-muted))]">Tags:</span>
-          <div class="flex flex-wrap gap-2">
-            {tags.map((tag: string) => (
-              <span class="px-2 py-1 bg-[hsl(var(--secondary))] rounded-md text-xs text-[hsl(var(--foreground-secondary))]">{tag}</span>
-            ))}
-          </div>
-        </div>
-      )}
+    <div class="space-y-3">
+        <h2 class="text-sm font-semibold text-[hsl(var(--foreground-muted))]">ON THIS PAGE</h2>
+        <nav>
+            <ul id="toc-list" class="list-none space-y-2 pl-0">
+                {/* Content will be dynamically populated by client-side script */}
+            </ul>
+        </nav>
     </div>
-  </div>
 
-  <div class="space-y-3">
-    <h2 class="text-sm font-semibold text-[hsl(var(--foreground-muted))]">STATS</h2>
-    <div class="space-y-2">
-      <div class="flex justify-between text-sm">
-        <span class="text-[hsl(var(--foreground-muted))]">Words:</span>
-        <span class="text-[hsl(var(--foreground-secondary))]">{words || '0'}</span>
-      </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-[hsl(var(--foreground-muted))]">Characters:</span>
-        <span class="text-[hsl(var(--foreground-secondary))]">{characters || '0'}</span>
-      </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-[hsl(var(--foreground-muted))]">Blocks:</span>
-        <span class="text-[hsl(var(--foreground-secondary))]">{blocks || '0'}</span>
-      </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-[hsl(var(--foreground-muted))]">Est.reading Time:</span>
-        <span class="text-[hsl(var(--foreground-secondary))]">{readingTime || '0m 0s'}</span>
-      </div>
+    <div class="space-y-3">
+        <h2 class="text-sm font-semibold text-[hsl(var(--foreground-muted))]">PROPERTIES</h2>
+        <div class="space-y-2">
+            <div class="flex items-start gap-2 text-sm">
+                <span class="text-lg opacity-70">📅</span>
+                <span class="text-[hsl(var(--foreground-muted))]">Created:</span>
+                <span class="text-[hsl(var(--foreground-secondary))]"
+                    ><FormattedDate date={pubDate} /></span
+                >
+            </div>
+
+            {
+                authors && authors.length > 0 && (
+                    <div class="flex items-start gap-2 text-sm">
+                        <span class="text-lg opacity-70">👤</span>
+                        <span class="text-[hsl(var(--foreground-muted))]">Author:</span>
+                        <span class="text-[hsl(var(--foreground-secondary))]">
+                            {authors.join(', ')}
+                        </span>
+                    </div>
+                )
+            }
+
+            {
+                tags && tags.length > 0 && (
+                    <div class="flex items-start gap-2 text-sm">
+                        <span class="text-lg opacity-70">🏷️</span>
+                        <span class="text-[hsl(var(--foreground-muted))]">Tags:</span>
+                        <div class="flex flex-wrap gap-2">
+                            {tags.map((tag: string) => (
+                                <span class="rounded-md bg-[hsl(var(--secondary))] px-2 py-1 text-xs text-[hsl(var(--foreground-secondary))]">
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )
+            }
+        </div>
     </div>
-  </div>
+
+    <div class="space-y-3">
+        <h2 class="text-sm font-semibold text-[hsl(var(--foreground-muted))]">STATS</h2>
+        <div class="space-y-2">
+            <div class="flex justify-between text-sm">
+                <span class="text-[hsl(var(--foreground-muted))]">Words:</span>
+                <span class="text-[hsl(var(--foreground-secondary))]">{words || '0'}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-[hsl(var(--foreground-muted))]">Characters:</span>
+                <span class="text-[hsl(var(--foreground-secondary))]">{characters || '0'}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-[hsl(var(--foreground-muted))]">Blocks:</span>
+                <span class="text-[hsl(var(--foreground-secondary))]">{blocks || '0'}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-[hsl(var(--foreground-muted))]">Est.reading Time:</span>
+                <span class="text-[hsl(var(--foreground-secondary))]">{readingTime || '0m 0s'}</span
+                >
+            </div>
+        </div>
+    </div>
 </div>
 
 <script is:inline>
-document.addEventListener('DOMContentLoaded', () => {
-  const tocContainer = document.getElementById('table-of-contents');
-  const tocList = document.getElementById('toc-list');
-  
-  if (tocContainer && tocList) {
-    const headingsData = JSON.parse(tocContainer.dataset.headings || '[]');
-    
-    // Existing tree creation logic (unchanged)
-    function createHeadingTree(headings) {
-      const tree = [];
-      const parentStack = [];
+    document.addEventListener('DOMContentLoaded', () => {
+        const tocContainer = document.getElementById('table-of-contents')
+        const tocList = document.getElementById('toc-list')
 
-      for (const heading of headings) {
-        while (parentStack.length > 0 && parentStack[parentStack.length - 1].depth >= heading.depth) {
-          parentStack.pop();
-        }
+        if (tocContainer && tocList) {
+            const headingsData = JSON.parse(tocContainer.dataset.headings || '[]')
 
-        if (parentStack.length === 0) {
-          tree.push(heading);
-        } else {
-          const parent = parentStack[parentStack.length - 1];
-          parent.children = parent.children || [];
-          parent.children.push(heading);
-        }
+            // Existing tree creation logic (unchanged)
+            function createHeadingTree(headings) {
+                const tree = []
+                const parentStack = []
 
-        parentStack.push(heading);
-      }
+                for (const heading of headings) {
+                    while (
+                        parentStack.length > 0 &&
+                        parentStack[parentStack.length - 1].depth >= heading.depth
+                    ) {
+                        parentStack.pop()
+                    }
 
-      return tree;
-    }
+                    if (parentStack.length === 0) {
+                        tree.push(heading)
+                    } else {
+                        const parent = parentStack[parentStack.length - 1]
+                        parent.children = parent.children || []
+                        parent.children.push(heading)
+                    }
 
-    // Existing rendering logic (unchanged)
-    function renderHeadingTree(headings) {
-      const ul = document.createElement('ul');
-      ul.className = 'space-y-2 list-none pl-0';
+                    parentStack.push(heading)
+                }
 
-      headings.forEach(heading => {
-        const li = document.createElement('li');
-        
-        const a = document.createElement('a');
-        a.href = `#${heading.slug}`;
-        a.textContent = heading.text;
-        a.className = `
+                return tree
+            }
+
+            // Existing rendering logic (unchanged)
+            function renderHeadingTree(headings) {
+                const ul = document.createElement('ul')
+                ul.className = 'space-y-2 list-none pl-0'
+
+                headings.forEach((heading) => {
+                    const li = document.createElement('li')
+
+                    const a = document.createElement('a')
+                    a.href = `#${heading.slug}`
+                    a.textContent = heading.text
+                    a.className = `
           ${heading.depth === 2 ? 'font-semibold' : 'pl-2'}
           text-[hsl(var(--foreground-secondary))] 
           hover:text-[hsl(var(--foreground))] 
@@ -132,68 +146,67 @@ document.addEventListener('DOMContentLoaded', () => {
           block 
           text-[0.95rem]
           toc-link
-        `;
-        a.dataset.slug = heading.slug;
+        `
+                    a.dataset.slug = heading.slug
 
-        li.appendChild(a);
+                    li.appendChild(a)
 
-        if (heading.children && heading.children.length > 0) {
-          const childUl = renderHeadingTree(heading.children);
-          childUl.className = 'pl-4 space-y-1';
-          li.appendChild(childUl);
-        }
+                    if (heading.children && heading.children.length > 0) {
+                        const childUl = renderHeadingTree(heading.children)
+                        childUl.className = 'pl-4 space-y-1'
+                        li.appendChild(childUl)
+                    }
 
-        ul.appendChild(li);
-      });
+                    ul.appendChild(li)
+                })
 
-      return ul;
-    }
-
-    // Create and render the heading tree
-    const headingTree = createHeadingTree(headingsData);
-    const renderedTree = renderHeadingTree(headingTree);
-    
-    // Clear existing content and append the new tree
-    tocList.innerHTML = '';
-    tocList.appendChild(renderedTree);
-
-    // New scrolling logic for URL update
-    const headingElements = headingsData.map(heading => 
-      document.querySelector(`[id="${heading.slug}"]`)
-    ).filter(Boolean);
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px 0px -50% 0px',
-      threshold: 0
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const headingSlug = entry.target.id;
-          
-          // Update URL without page scroll
-          history.replaceState(null, '', `#${headingSlug}`);
-
-          // Highlight corresponding TOC link
-          const tocLinks = document.querySelectorAll('.toc-link');
-          tocLinks.forEach(link => {
-            link.classList.remove('text-[rgb(79,70,229)]', 'font-bold');
-            link.classList.add('text-[hsl(var(--foreground-secondary))]');
-            
-            if (link.dataset.slug === headingSlug) {
-              link.classList.remove('text-[hsl(var(--foreground-secondary))]');
-              link.classList.add('text-[rgb(79,70,229)]', 'font-bold');
+                return ul
             }
-          });
-        }
-      });
-    }, observerOptions);
 
-    // Observe all heading elements
-    headingElements.forEach(el => observer.observe(el));
-    
-  }
-});
+            // Create and render the heading tree
+            const headingTree = createHeadingTree(headingsData)
+            const renderedTree = renderHeadingTree(headingTree)
+
+            // Clear existing content and append the new tree
+            tocList.innerHTML = ''
+            tocList.appendChild(renderedTree)
+
+            // New scrolling logic for URL update
+            const headingElements = headingsData
+                .map((heading) => document.querySelector(`[id="${heading.slug}"]`))
+                .filter(Boolean)
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -50% 0px',
+                threshold: 0,
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const headingSlug = entry.target.id
+
+                        // Update URL without page scroll
+                        history.replaceState(null, '', `#${headingSlug}`)
+
+                        // Highlight corresponding TOC link
+                        const tocLinks = document.querySelectorAll('.toc-link')
+                        tocLinks.forEach((link) => {
+                            link.classList.remove('text-[rgb(79,70,229)]', 'font-bold')
+                            link.classList.add('text-[hsl(var(--foreground-secondary))]')
+
+                            if (link.dataset.slug === headingSlug) {
+                                link.classList.remove('text-[hsl(var(--foreground-secondary))]')
+                                link.classList.add('text-[rgb(79,70,229)]', 'font-bold')
+                            }
+                        })
+                    }
+                })
+            }, observerOptions)
+
+            // Observe all heading elements
+            headingElements.forEach((el) => observer.observe(el))
+        }
+    })
 </script>

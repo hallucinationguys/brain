@@ -1,80 +1,83 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import { getCollection } from 'astro:content';
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils';
-import Base from '@/layouts/Base.astro';
-import Prose from '@/components/Prose.astro';
-import FormattedDate from '@/components/FormattedDate.astro';
+import type { CollectionEntry } from 'astro:content'
+import { getCollection } from 'astro:content'
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils'
+import Base from '@/layouts/Base.astro'
+import Prose from '@/components/Prose.astro'
+import FormattedDate from '@/components/FormattedDate.astro'
 
 export async function getStaticPaths() {
-  return [
-    { params: { lang: 'en' } },
-    { params: { lang: 'vi' } }
-  ];
+    return [{ params: { lang: 'en' } }, { params: { lang: 'vi' } }]
 }
 
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
-const translatePath = useTranslatedPath(lang);
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+const translatePath = useTranslatedPath(lang)
 
 // Fetch blog posts for the current language
 const posts = await getCollection('blog', (post: CollectionEntry<'blog'>) => {
-  return post.slug.startsWith(`${lang}/`);
-});
+    return post.slug.startsWith(`${lang}/`)
+})
 
 // Sort posts by publication date (most recent first)
-const sortedPosts = posts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => 
-  new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
-);
+const sortedPosts = posts.sort(
+    (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
+        new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf(),
+)
 ---
 
 <Base title={t('site.title')} description={t('site.description')}>
-  <div class="container mx-auto px-4 py-8">
-    <Prose>
-      <h1 class="text-4xl font-bold mb-8 text-foreground">
-        {t('site.title')}
-      </h1>
-      
-      <p class="text-lg text-muted-foreground mb-8">
-        {t('site.description')}
-      </p>
+    <div class="container mx-auto px-4 py-8">
+        <Prose>
+            <h1 class="mb-8 text-4xl font-bold text-foreground">
+                {t('site.title')}
+            </h1>
 
-      <section class="blog-posts">
-        <h2 class="text-2xl font-semibold mb-6 text-foreground">
-          {t('nav.blog')}
-        </h2>
+            <p class="mb-8 text-lg text-muted-foreground">
+                {t('site.description')}
+            </p>
 
-        {sortedPosts.length > 0 ? (
-          <ul class="space-y-6">
-            {sortedPosts.map((post: CollectionEntry<'blog'>) => (
-              <li class="border-b pb-6 last:border-b-0" style="border-color: hsl(var(--border))">
-                <article>
-                  <h3 class="text-xl font-bold mb-2">
-                    <a 
-                      href={translatePath(`/blog/${post.slug.split('/').pop()}`)} 
-                      class="text-primary hover:underline"
-                    >
-                      {post.data.title}
-                    </a>
-                  </h3>
-                  <div class="text-muted-foreground text-sm mb-2">
-                    <FormattedDate date={post.data.pubDate} />
-                  </div>
-                  {post.data.description && (
-                    <p class="text-muted-foreground">
-                      {post.data.description}
-                    </p>
-                  )}
-                </article>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p class="text-muted-foreground italic">
-            {t('blog.no_posts')}
-          </p>
-        )}
-      </section>
-    </Prose>
-  </div>
+            <section class="blog-posts">
+                <h2 class="mb-6 text-2xl font-semibold text-foreground">
+                    {t('nav.blog')}
+                </h2>
+
+                {
+                    sortedPosts.length > 0 ? (
+                        <ul class="space-y-6">
+                            {sortedPosts.map((post: CollectionEntry<'blog'>) => (
+                                <li
+                                    class="border-b pb-6 last:border-b-0"
+                                    style="border-color: hsl(var(--border))"
+                                >
+                                    <article>
+                                        <h3 class="mb-2 text-xl font-bold">
+                                            <a
+                                                href={translatePath(
+                                                    `/blog/${post.slug.split('/').pop()}`,
+                                                )}
+                                                class="text-primary hover:underline"
+                                            >
+                                                {post.data.title}
+                                            </a>
+                                        </h3>
+                                        <div class="mb-2 text-sm text-muted-foreground">
+                                            <FormattedDate date={post.data.pubDate} />
+                                        </div>
+                                        {post.data.description && (
+                                            <p class="text-muted-foreground">
+                                                {post.data.description}
+                                            </p>
+                                        )}
+                                    </article>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p class="italic text-muted-foreground">{t('blog.no_posts')}</p>
+                    )
+                }
+            </section>
+        </Prose>
+    </div>
 </Base>
