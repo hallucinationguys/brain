@@ -2,7 +2,6 @@
 title: 'Xin chào thế giới'
 description: 'Chào mừng đến với blog đa ngôn ngữ của tôi'
 pubDate: '2024-11-05'
-heroImage: '/blog-placeholder-1.jpg'
 lang: 'vi'
 tags:
     - 'i18n'

@@ -2,7 +2,6 @@
 title: 'Hello World'
 description: 'Welcome to my multilingual blog with enhanced markdown features'
 pubDate: '2024-05-11'
-heroImage: '/blog-placeholder-2.jpg'
 lang: 'en'
 tags:
     - 'i18n'
