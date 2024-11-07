@@ -89,35 +89,31 @@ document.addEventListener('DOMContentLoaded', () => {
   if (tocContainer && tocList) {
     const headingsData = JSON.parse(tocContainer.dataset.headings || '[]');
     
-    // Create a tree structure for headings
+    // Existing tree creation logic (unchanged)
     function createHeadingTree(headings) {
       const tree = [];
       const parentStack = [];
 
       for (const heading of headings) {
-        // Remove existing children from the stack based on depth
         while (parentStack.length > 0 && parentStack[parentStack.length - 1].depth >= heading.depth) {
           parentStack.pop();
         }
 
-        // If no parent or first level heading, add to root
         if (parentStack.length === 0) {
           tree.push(heading);
         } else {
-          // Add as a child to the last parent
           const parent = parentStack[parentStack.length - 1];
           parent.children = parent.children || [];
           parent.children.push(heading);
         }
 
-        // This heading could be a parent for subsequent headings
         parentStack.push(heading);
       }
 
       return tree;
     }
 
-    // Recursive function to render nested headings
+    // Existing rendering logic (unchanged)
     function renderHeadingTree(headings) {
       const ul = document.createElement('ul');
       ul.className = 'space-y-2 list-none pl-0';
@@ -135,7 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
           transition-colors duration-200 
           block 
           text-[0.95rem]
+          toc-link
         `;
+        a.dataset.slug = heading.slug;
 
         li.appendChild(a);
 
@@ -158,6 +156,44 @@ document.addEventListener('DOMContentLoaded', () => {
     // Clear existing content and append the new tree
     tocList.innerHTML = '';
     tocList.appendChild(renderedTree);
+
+    // New scrolling logic for URL update
+    const headingElements = headingsData.map(heading => 
+      document.querySelector(`[id="${heading.slug}"]`)
+    ).filter(Boolean);
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px 0px -50% 0px',
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const headingSlug = entry.target.id;
+          
+          // Update URL without page scroll
+          history.replaceState(null, '', `#${headingSlug}`);
+
+          // Highlight corresponding TOC link
+          const tocLinks = document.querySelectorAll('.toc-link');
+          tocLinks.forEach(link => {
+            link.classList.remove('text-[rgb(79,70,229)]', 'font-bold');
+            link.classList.add('text-[hsl(var(--foreground-secondary))]');
+            
+            if (link.dataset.slug === headingSlug) {
+              link.classList.remove('text-[hsl(var(--foreground-secondary))]');
+              link.classList.add('text-[rgb(79,70,229)]', 'font-bold');
+            }
+          });
+        }
+      });
+    }, observerOptions);
+
+    // Observe all heading elements
+    headingElements.forEach(el => observer.observe(el));
+    
   }
 });
 </script>
